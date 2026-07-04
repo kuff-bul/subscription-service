@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-subscriptions
+      author: codex
+      changes:
+        - createTable:
+            tableName: subscriptions
+            columns:
+              - column:
+                  name: login
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_subscriptions
+                    nullable: false
+              - column:
+                  name: subscription_type
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expires_at
+                  type: timestamp with time zone
+        - sql:
+            dbms: postgresql
+            sql: >
+              alter table subscriptions
+              add constraint chk_subscriptions_type
+              check (subscription_type in ('FREE', 'PAID'))
+  - changeSet:
+      id: 001-subscriptions-sample-insert
+      author: codex
+      context: sample-data
+      changes:
+        - sql:
+            sql: >
+              insert into subscriptions (login, subscription_type, expires_at)
+              values ('user1', 'PAID', '2026-12-31 23:59:59+00')
