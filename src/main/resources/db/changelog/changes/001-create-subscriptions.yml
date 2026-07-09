@@ -27,12 +27,3 @@ databaseChangeLog:
               alter table subscriptions
               add constraint chk_subscriptions_type
               check (subscription_type in ('FREE', 'PAID'))
-  - changeSet:
-      id: 001-subscriptions-sample-insert
-      author: codex
-      context: sample-data
-      changes:
-        - sql:
-            sql: >
-              insert into subscriptions (login, subscription_type, expires_at)
-              values ('user1', 'PAID', '2026-12-31 23:59:59+00')

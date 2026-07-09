@@ -4,11 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.KafkaException;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import ru.adnr.subscriptionservice.config.KafkaProperties;
 import ru.adnr.subscriptionservice.dto.SubscriptionChangedEvent;
+import ru.adnr.subscriptionservice.exception.KafkaPublishException;
 
 @Component
 @RequiredArgsConstructor
@@ -32,7 +32,7 @@ public class SubscriptionEventProducer {
         try {
             return objectMapper.writeValueAsString(event);
         } catch (JsonProcessingException exception) {
-            throw new KafkaException("Failed to serialize subscription event. login=" + event.login(), exception);
+            throw new KafkaPublishException("Failed to serialize subscription event. login=" + event.login(), exception);
         }
     }
 }
