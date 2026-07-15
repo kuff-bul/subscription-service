@@ -23,9 +23,13 @@ public class SubscriptionEventProducer {
 
     public void publishSubscriptionExpired(String login) {
         SubscriptionChangedEvent event = new SubscriptionChangedEvent(login, SUBSCRIPTION_EXPIRED);
+        publish(event);
+    }
+
+    private void publish(SubscriptionChangedEvent event) {
         String payload = toJson(event);
-        kafkaTemplate.send(kafkaProperties.subscriptionEventsTopic(), login, payload);
-        log.info("Published subscription event. login={}, reason={}", login, SUBSCRIPTION_EXPIRED);
+        kafkaTemplate.send(kafkaProperties.subscriptionEventsTopic(), event.login(), payload);
+        log.info("Published subscription event. login={}, reason={}", event.login(), event.reason());
     }
 
     private String toJson(SubscriptionChangedEvent event) {

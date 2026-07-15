@@ -3,3 +3,5 @@ databaseChangeLog:
       file: db/changelog/changes/001-create-subscriptions.yml
   - include:
       file: db/changelog/changes/002-create-shedlock.yml
+  - include:
+      file: db/changelog/changes/003-create-users.yml

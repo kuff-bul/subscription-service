@@ -1,32 +1,56 @@
 # Subscription Service
 
-Stores a user's subscription by Keycloak login.
+Stores a user and the user's subscription by Keycloak login.
 
 ## Data Model
 
-The `subscriptions` table uses the Keycloak login as the primary key:
+The `users` table stores the application user:
 
 ```text
-login              varchar(255) primary key
+login         varchar(255) primary key
+email         varchar(320), nullable
+display_name  varchar(255), nullable
+created_at    timestamp with time zone
+```
+
+The `subscriptions` table uses the same login as the primary key and foreign key:
+
+```text
+login              varchar(255) primary key references users(login)
 subscription_type  FREE | PAID
 expires_at         timestamp with time zone, nullable
 ```
 
-Users are not created automatically from Keycloak registration. Add the row
-manually and make sure `login` matches the Keycloak `preferred_username` value.
+Users are not created automatically from Keycloak registration. Insert the user
+and subscription rows manually and make sure `login` matches the Keycloak
+`preferred_username` value.
 
-Example:
+Paid subscription:
 
 ```sql
+insert into users (login, email, display_name)
+values ('user1', 'user1@example.com', 'User One')
+on conflict (login) do nothing;
+
 insert into subscriptions (login, subscription_type, expires_at)
-values ('user1', 'PAID', '2026-12-31 23:59:59+00');
+values ('user1', 'PAID', '2026-12-31 23:59:59+00')
+on conflict (login) do update
+set subscription_type = excluded.subscription_type,
+    expires_at = excluded.expires_at;
 ```
 
-For a free subscription:
+Free subscription:
 
 ```sql
+insert into users (login, email, display_name)
+values ('user1', 'user1@example.com', 'User One')
+on conflict (login) do nothing;
+
 insert into subscriptions (login, subscription_type, expires_at)
-values ('user1', 'FREE', null);
+values ('user1', 'FREE', null)
+on conflict (login) do update
+set subscription_type = excluded.subscription_type,
+    expires_at = excluded.expires_at;
 ```
 
 ## Runtime Behavior
