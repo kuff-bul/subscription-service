@@ -23,6 +23,12 @@ spring:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yml
 
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9094}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
 eureka:
   client:
     service-url:
@@ -32,3 +38,12 @@ eureka:
   instance:
     prefer-ip-address: ${EUREKA_PREFER_IP_ADDRESS:true}
     instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}}
+
+app:
+  kafka:
+    subscription-events-topic: ${KAFKA_SUBSCRIPTION_EVENTS_TOPIC:subscription-events}
+
+  subscriptions:
+    expiration-check-fixed-delay-ms: ${SUBSCRIPTION_EXPIRATION_CHECK_FIXED_DELAY_MS:60000}
+    expiration-lock-at-most-for: ${SUBSCRIPTION_EXPIRATION_LOCK_AT_MOST_FOR:PT5M}
+    expiration-lock-at-least-for: ${SUBSCRIPTION_EXPIRATION_LOCK_AT_LEAST_FOR:PT5S}

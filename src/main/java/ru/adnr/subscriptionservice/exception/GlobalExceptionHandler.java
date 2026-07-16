@@ -23,6 +23,11 @@ public class GlobalExceptionHandler {
         return build(status, status.name(), exception.getReason(), null);
     }
 
+    @ExceptionHandler(KafkaPublishException.class)
+    public ResponseEntity<ErrorResponse> handleKafka(KafkaPublishException exception) {
+        return build(HttpStatus.INTERNAL_SERVER_ERROR, "KAFKA_PUBLISH_ERROR", "Kafka operation failed", exception);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpected(Exception exception) {
         return build(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "Internal server error", exception);

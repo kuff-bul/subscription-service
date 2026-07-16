@@ -10,4 +10,6 @@ public interface SubscriptionService {
     SubscriptionResponse toResponse(Subscription subscription);
 
     boolean isPaidActive(Subscription subscription);
+
+    int expirePaidSubscriptions();
 }
